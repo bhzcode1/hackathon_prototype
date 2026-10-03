@@ -1,0 +1,79 @@
+export interface RiskData {
+  region: string;
+  latitude: number;
+  longitude: number;
+  risk_score: number;
+  risk_level: string;
+  temperature: number;
+  humidity: number;
+  wind_speed: number;
+  rainfall: number;
+}
+
+export interface HotspotData {
+  latitude: number;
+  longitude: number;
+  acq_date: string;
+  acq_time: string;
+  satellite: string;
+  instrument: string;
+  confidence: number | null;
+  frp: number | null;
+  daynight: string;
+  severity: string;
+  source: string;
+  detected_at: string;
+}
+
+export interface AlertData {
+  id: number;
+  region: string;
+  severity: string;
+  risk_score: number;
+  message: string;
+  timestamp: string;
+  status: string;
+}
+
+export interface IncidentData {
+  id: number;
+  region: string;
+  risk_score: number;
+  severity: string;
+  detected_at: string;
+  status: string;
+}
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+
+export const fetchRiskData = async (): Promise<RiskData[]> => {
+  const response = await fetch(`${API_BASE_URL}/api/risk`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch risk data');
+  }
+  return response.json();
+};
+
+export const fetchHotspotsData = async (): Promise<HotspotData[]> => {
+  const response = await fetch(`${API_BASE_URL}/api/hotspots`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch hotspots data');
+  }
+  return response.json();
+};
+
+export const fetchAlertsData = async (): Promise<AlertData[]> => {
+  const response = await fetch(`${API_BASE_URL}/api/alerts`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch alerts data');
+  }
+  return response.json();
+};
+
+export const fetchIncidentsData = async (): Promise<IncidentData[]> => {
+  const response = await fetch(`${API_BASE_URL}/api/incidents`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch incidents data');
+  }
+  return response.json();
+};

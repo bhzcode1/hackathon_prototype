@@ -1,0 +1,14 @@
+{
+  "feature_names": [
+    "temperature",
+    "humidity",
+    "wind_speed",
+    "rainfall",
+    "vegetation_index",
+    "fuel_moisture",
+    "elevation",
+    "slope"
+  ],
+  "model_type": "RandomForestClassifier",
+  "training_date": "2026-10-02T16:07:16.299567"
+}

@@ -1,0 +1,82 @@
+import { RiskData } from '@/lib/api';
+import { HotspotData } from '@/lib/api';
+import { AlertData } from '@/lib/api';
+import { IncidentData } from '@/lib/api';
+import { fetchRiskData, fetchHotspotsData, fetchAlertsData, fetchIncidentsData } from '@/lib/api';
+import Header from '@/components/Header';
+import StatsCards from '@/components/StatsCards';
+import RiskOverview from '@/components/RiskOverview';
+import ActiveIncidents from '@/components/ActiveIncidents';
+import Hotspots from '@/components/Hotspots';
+import Alerts from '@/components/Alerts';
+import EnvironmentalConditions from '@/components/EnvironmentalConditions';
+
+export default async function Home() {
+  let riskData: RiskData[] = [];
+  let hotspotsData: HotspotData[] = [];
+  let alertsData: AlertData[] = [];
+  let incidentsData: IncidentData[] = [];
+
+  try {
+    const [risk, hotspots, alerts, incidents] = await Promise.all([
+      fetchRiskData(),
+      fetchHotspotsData(),
+      fetchAlertsData(),
+      fetchIncidentsData()
+    ]);
+    riskData = risk;
+    hotspotsData = hotspots;
+    alertsData = alerts;
+    incidentsData = incidents;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    // In case of error, we can use mock data or show error state
+    // For now, we'll empty arrays and the components will handle empty data
+  }
+
+  // Calculate stats
+  const totalRegions = riskData.length;
+  const riskCounts = {
+    LOW: riskData.filter(r => r.risk_level === 'LOW').length,
+    MEDIUM: riskData.filter(r => r.risk_level === 'MEDIUM').length,
+    HIGH: riskData.filter(r => r.risk_level === 'HIGH').length,
+    CRITICAL: riskData.filter(r => r.risk_level === 'CRITICAL').length,
+  };
+  const activeHotspots = hotspotsData.length;
+  const activeAlerts = alertsData.filter(a => a.status === 'ACTIVE').length;
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <main className="px-6 py-8 max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">
+          FireSight AI Dashboard
+        </h1>
+
+        <StatsCards
+          totalRegions={totalRegions}
+          lowRisk={riskCounts.LOW}
+          mediumRisk={riskCounts.MEDIUM}
+          highRisk={riskCounts.HIGH}
+          criticalRisk={riskCounts.CRITICAL}
+          activeHotspots={activeHotspots}
+          activeAlerts={activeAlerts}
+        />
+
+        <div className="grid gap-6 mb-8">
+          <div className="grid-cols-1 md:grid-cols-2 gap-4">
+            <RiskOverview riskData={riskData} />
+            <ActiveIncidents incidentsData={incidentsData} />
+          </div>
+
+          <div className="grid-cols-1 md:grid-cols-2 gap-4">
+            <Hotspots hotspotsData={hotspotsData} />
+            <Alerts alertsData={alertsData} />
+          </div>
+        </div>
+
+        <EnvironmentalConditions riskData={riskData[0]} />
+      </main>
+    </div>
+  );
+}
