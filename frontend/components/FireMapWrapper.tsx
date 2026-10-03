@@ -15,6 +15,6 @@ const FireMap = dynamic(
   }
 );
 
-export default function FireMapWrapper({ hotspotsData }: { hotspotsData: HotspotData[] }) {
-  return <FireMap hotspotsData={hotspotsData} />;
+export default function FireMapWrapper({ hotspotsData, center }: { hotspotsData: HotspotData[]; center: [number, number] | null }) {
+  return <FireMap hotspotsData={hotspotsData} center={center} />;
 }

@@ -12,9 +12,10 @@ print("DEBUG: main.py imported risk, hotspots, alerts, incidents")  # Debug prin
 app = FastAPI(title="FireSight AI", description="AI-Powered Forest Fire Early Warning & Response System", version="0.1.0")
 
 # Configure CORS
+allowed_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Next.js default port
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

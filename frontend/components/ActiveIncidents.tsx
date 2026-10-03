@@ -57,8 +57,8 @@ export default function ActiveIncidents({ incidents, selectedIncidentId, onIncid
   };
 
   const handleAnalyze = async (id: string) => {
-    setLoading(prev => ({ ...prev, [id]: true }));
-    setError(prev => ({ ...prev, [id]: "" }));
+    setLoading((prev: Record<string, boolean>) => ({ ...prev, [id]: true }));
+    setError((prev: Record<string, string>) => ({ ...prev, [id]: "" }));
     try {
       const response = await fetch(`/api/incidents/${id}/analyze`, {
         method: 'POST',
@@ -67,17 +67,18 @@ export default function ActiveIncidents({ incidents, selectedIncidentId, onIncid
         throw new Error(`Failed to analyze incident: ${response.status}`);
       }
       const data = await response.json();
-      setAnalyses(prev => ({ ...prev, [id]: data.analysis }));
-    } catch (err) {
-      setError(prev => ({ ...prev, [id]: err.message }));
+      setAnalyses((prev: Record<string, any>) => ({ ...prev, [id]: data.analysis }));
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'An unknown error occurred';
+      setError((prev: Record<string, string>) => ({ ...prev, [id]: message }));
     } finally {
-      setLoading(prev => ({ ...prev, [id]: false }));
+      setLoading((prev: Record<string, boolean>) => ({ ...prev, [id]: false }));
     }
   };
 
   const handleRegenerate = async (id: string) => {
-    setLoading(prev => ({ ...prev, [id]: true }));
-    setError(prev => ({ ...prev, [id]: "" }));
+    setLoading((prev: Record<string, boolean>) => ({ ...prev, [id]: true }));
+    setError((prev: Record<string, string>) => ({ ...prev, [id]: "" }));
     try {
       const response = await fetch(`/api/incidents/${id}/analyze/regenerate`, {
         method: 'POST',
@@ -86,11 +87,12 @@ export default function ActiveIncidents({ incidents, selectedIncidentId, onIncid
         throw new Error(`Failed to regenerate analysis: ${response.status}`);
       }
       const data = await response.json();
-      setAnalyses(prev => ({ ...prev, [id]: data.analysis }));
-    } catch (err) {
-      setError(prev => ({ ...prev, [id]: err.message }));
+      setAnalyses((prev: Record<string, any>) => ({ ...prev, [id]: data.analysis }));
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'An unknown error occurred';
+      setError((prev: Record<string, string>) => ({ ...prev, [id]: message }));
     } finally {
-      setLoading(prev => ({ ...prev, [id]: false }));
+      setLoading((prev: Record<string, boolean>) => ({ ...prev, [id]: false }));
     }
   };
 
